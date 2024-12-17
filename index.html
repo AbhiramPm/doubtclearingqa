@@ -280,95 +280,66 @@
         </div>
     </div>
 
-    <script>
-        // Global state for doubts
-        const doubtsData = {
-            qaTable: [],
-            phpTable: [],
-            wpTable: [],
-            mobileTable: []
-        };
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
 
-        // Screenshot preview
-        document.getElementById('screenshotUpload').addEventListener('change', function(e) {
-            const previewContainer = document.getElementById('screenshotPreview');
-            previewContainer.innerHTML = '';
+<script>
+    // Initialize Supabase (Replace with your Supabase URL and API key)
+    const supabaseUrl = 'https://wpqmoelgswsroyzughjl.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW1vZWxnc3dzcm95enVnaGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MzQxODEsImV4cCI6MjA1MDAxMDE4MX0.FbwnyfxzQhc_Az674ocGeZgcNLRZ-35TM73k01mnBKQ';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-            Array.from(this.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.classList.add('screenshot-preview');
-                    previewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+    // Submit Doubt Form with Supabase
+    document.getElementById('doubtForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const department = document.getElementById('department').value;
+        const project = document.getElementById('project').value;
+        const doubtDescription = document.getElementById('doubtDescription').value;
+        const screenshots = document.getElementById('screenshotUpload').files;
+
+        // Create screenshot URLs
+        const screenshotUrls = Array.from(screenshots).map(file => {
+            return URL.createObjectURL(file);
         });
 
-        // Submit Doubt Form
-        document.getElementById('doubtForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const department = document.getElementById('department').value;
-            const project = document.getElementById('project').value;
-            const doubtDescription = document.getElementById('doubtDescription').value;
+        // Insert doubt into Supabase
+        const { data, error } = await supabase
+            .from('doubts')  // Replace with your actual table name
+            .insert([
+                {
+                    name: name,
+                    department: department,
+                    project: project,
+                    doubt_description: doubtDescription,
+                    status: 'open',
+                    screenshots: screenshotUrls
+                }
+            ]);
 
-            // Create the doubt row
-            const newDoubt = {
-                name,
-                project,
-                doubt: doubtDescription,
-                status: 'Open'
-            };
+        if (error) {
+            console.error('Error inserting doubt:', error);
+        } else {
+            // Add to the table on successful insert
+            const tbody = document.querySelector(`#${department} tbody`);
+            const tr = document.createElement('tr');
+            tr.classList.add('doubt-row');
+            tr.innerHTML = `
+                <td>${name}</td>
+                <td>${project}</td>
+                <td>${doubtDescription}</td>
+                <td class="status-open">Open</td>
+            `;
+            tbody.appendChild(tr);
 
-            doubtsData[department].push(newDoubt);
-            updateTable(department);
-            closeModal();
-        });
-
-        // Update Table
-        function updateTable(department) {
-            const tableBody = document.querySelector(`#${department} tbody`);
-            tableBody.innerHTML = '';
-
-            doubtsData[department].forEach(doubt => {
-                const row = document.createElement('tr');
-                row.classList.add('doubt-row');
-                row.innerHTML = `
-                    <td>${doubt.name}</td>
-                    <td>${doubt.project}</td>
-                    <td>${doubt.doubt}</td>
-                    <td class="${doubt.status.toLowerCase()}">${doubt.status}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+            // Close modal
+            document.getElementById('askDoubtModal').style.display = 'none';
+            this.reset();
+            document.getElementById('screenshotPreview').innerHTML = '';
         }
+    });
+</script>
 
-        // Modal Logic
-        const modal = document.getElementById('askDoubtModal');
-        const btn = document.getElementById('askDoubtBtn');
-        const span = document.getElementsByClassName('close')[0];
-
-        btn.onclick = function() {
-            modal.style.display = "block";
-        };
-
-        span.onclick = function() {
-            closeModal();
-        };
-
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                closeModal();
-            }
-        };
-    </script>
 </body>
 </html>
 
