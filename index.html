@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    const { createClient } = supabase;
-    const supabaseUrl = 'https://wpqmoelgswsroyzughjl.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW1vZWxnc3dzcm95enVnaGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MzQxODEsImV4cCI6MjA1MDAxMDE4MX0.FbwnyfxzQhc_Az674ocGeZgcNLRZ-35TM73k01mnBKQ';
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comprehensive Doubt Management System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -61,7 +53,6 @@
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
-            max-height: 500px;
         }
 
         .table-header {
@@ -88,27 +79,16 @@
             padding: 12px;
             text-align: center;
             border-bottom: 1px solid #ecf0f1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-            cursor: pointer;
-        }
-
-        .doubt-row:hover {
-            background-color: #f0f0f0;
         }
 
         .status-open {
             color: #e74c3c;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         .status-closed {
             color: #2ecc71;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         .btn {
@@ -118,9 +98,7 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            font-size: 1em;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            margin: 5px;
         }
 
         .btn:hover {
@@ -136,7 +114,6 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
             background-color: rgba(0,0,0,0.5);
         }
 
@@ -146,7 +123,7 @@
             padding: 25px;
             border-radius: 10px;
             width: 90%;
-            max-width: 800px;
+            max-width: 600px;
             position: relative;
         }
 
@@ -159,20 +136,12 @@
             font-weight: bold;
             cursor: pointer;
         }
-
-        .screenshot-preview {
-            max-width: 100px;
-            max-height: 100px;
-            margin: 5px;
-        }
     </style>
 </head>
 <body>
     <header>
         <h1><i class="fas fa-question-circle"></i> Doubt Management System</h1>
-        <button class="btn" id="askDoubtBtn">
-            <i class="fas fa-plus"></i> Ask Doubt
-        </button>
+        <button class="btn" id="askDoubtBtn"><i class="fas fa-plus"></i> Ask Doubt</button>
     </header>
 
     <div class="container">
@@ -182,63 +151,18 @@
                 <div class="table-body">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Project</th>
-                                <th>Doubt</th>
-                                <th>Status</th>
-                            </tr>
+                            <tr><th>Name</th><th>Project</th><th>Doubt</th><th>Status</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-
             <div class="table-container" id="phpTable">
                 <div class="table-header">PHP Department</div>
                 <div class="table-body">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Project</th>
-                                <th>Doubt</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="table-container" id="wpTable">
-                <div class="table-header">WordPress Department</div>
-                <div class="table-body">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Project</th>
-                                <th>Doubt</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="table-container" id="mobileTable">
-                <div class="table-header">Mobile Development</div>
-                <div class="table-body">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Project</th>
-                                <th>Doubt</th>
-                                <th>Status</th>
-                            </tr>
+                            <tr><th>Name</th><th>Project</th><th>Doubt</th><th>Status</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -253,168 +177,70 @@
             <span class="close">&times;</span>
             <h2>Ask a Doubt</h2>
             <form id="doubtForm">
-                <div>
-                    <label>Name:</label>
-                    <input type="text" id="name" required>
-                </div>
-
-                <div>
-                    <label>Department:</label>
-                    <select id="department" required>
-                        <option value="qaTable">QA Department</option>
-                        <option value="phpTable">PHP Department</option>
-                        <option value="wpTable">WordPress Department</option>
-                        <option value="mobileTable">Mobile Development</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Project:</label>
-                    <input type="text" id="project" required>
-                </div>
-
-                <div>
-                    <label>Doubt Description:</label>
-                    <textarea id="doubtDescription" rows="4" required></textarea>
-                </div>
-
-                <div>
-                    <label>Screenshots (Optional):</label>
-                    <input type="file" id="screenshotUpload" multiple accept="image/*">
-                    <div id="screenshotPreview"></div>
-                </div>
-
-                <button type="submit" class="btn">Submit Doubt</button>
+                <label>Name:</label>
+                <input type="text" id="name" required><br><br>
+                <label>Department:</label>
+                <select id="department" required>
+                    <option value="qaTable">QA</option>
+                    <option value="phpTable">PHP</option>
+                </select><br><br>
+                <label>Project:</label>
+                <input type="text" id="project" required><br><br>
+                <label>Doubt:</label>
+                <textarea id="doubtDescription" required></textarea><br><br>
+                <button type="submit" class="btn">Submit</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Global state for doubts
-        const doubtsData = {
-            qaTable: [],
-            phpTable: [],
-            wpTable: [],
-            mobileTable: []
+        const supabaseUrl = 'https://wpqmoelgswsroyzughjl.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW1vZWxnc3dzcm95enVnaGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MzQxODEsImV4cCI6MjA1MDAxMDE4MX0.FbwnyfxzQhc_Az674ocGeZgcNLRZ-35TM73k01mnBKQ';
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        const modal = document.getElementById('askDoubtModal');
+        document.getElementById('askDoubtBtn').onclick = () => modal.style.display = 'block';
+        document.querySelector('.close').onclick = () => modal.style.display = 'none';
+
+        async function fetchDoubts() {
+            const { data, error } = await supabase.from('doubts').select('*');
+            if (error) console.error('Error fetching:', error.message);
+
+            document.querySelectorAll('table tbody').forEach(tbody => tbody.innerHTML = '');
+
+            data.forEach(doubt => {
+                const row = `<tr>
+                    <td>${doubt.name}</td>
+                    <td>${doubt.project}</td>
+                    <td>${doubt.description}</td>
+                    <td class="status-open">${doubt.status}</td>
+                </tr>`;
+                document.querySelector(`#${doubt.department} tbody`).insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        document.getElementById('doubtForm').onsubmit = async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const department = document.getElementById('department').value;
+            const project = document.getElementById('project').value;
+            const description = document.getElementById('doubtDescription').value;
+
+            const { error } = await supabase.from('doubts').insert([
+                { name, department, project, description, status: 'Open' }
+            ]);
+
+            if (error) alert('Error: ' + error.message);
+            else {
+                alert('Doubt submitted!');
+                modal.style.display = 'none';
+                fetchDoubts();
+            }
         };
 
-        // Screenshot preview
-        document.getElementById('screenshotUpload').addEventListener('change', function(e) {
-            const previewContainer = document.getElementById('screenshotPreview');
-            previewContainer.innerHTML = '';
-
-            Array.from(this.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.classList.add('screenshot-preview');
-                    previewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-
-document.getElementById('doubtForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const department = document.getElementById('department').value;
-    const project = document.getElementById('project').value;
-    const description = document.getElementById('doubtDescription').value;
-
-    // Send data to Supabase
-    const { data, error } = await supabase
-        .from('doubts')
-        .insert([
-            { name, department, project, description, status: 'Open' }
-        ]);
-
-    if (error) {
-        alert('Error: ' + error.message);
-    } else {
-        alert('Doubt successfully added!');
-        window.location.reload(); // Reload to see the updated list
-    }
-});
-
-
-            // Create screenshot URLs
-            const screenshotUrls = Array.from(screenshots).map(file => {
-                return URL.createObjectURL(file);
-            });
-
-            // Add to table
-            const tbody = document.querySelector(`#${department} tbody`);
-            const tr = document.createElement('tr');
-            tr.classList.add('doubt-row');
-            tr.innerHTML = `
-                <td>${name}</td>
-                <td>${project}</td>
-                <td>${doubtDescription}</td>
-                <td class="status-open">Open</td>
-            `;
-
-            tbody.appendChild(tr);
-
-            // Close modal
-            document.getElementById('askDoubtModal').style.display = 'none';
-            this.reset();
-            document.getElementById('screenshotPreview').innerHTML = '';
-        });
-
-        // Modal open and close
-        document.getElementById('askDoubtBtn').addEventListener('click', () => {
-            document.getElementById('askDoubtModal').style.display = 'block';
-        });
-
-        document.querySelector('#askDoubtModal .close').addEventListener('click', () => {
-            document.getElementById('askDoubtModal').style.display = 'none';
-        });
-
-        // Close modal if clicked outside
-        window.addEventListener('click', (event) => {
-            const modal = document.getElementById('askDoubtModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        async function fetchDoubts() {
-    const { data, error } = await supabase
-        .from('doubts')
-        .select('*');
-
-    if (error) {
-        console.error('Error fetching data:', error.message);
-        return;
-    }
-
-    const departments = {
-        qaTable: document.querySelector('#qaTable tbody'),
-        phpTable: document.querySelector('#phpTable tbody'),
-        wpTable: document.querySelector('#wpTable tbody'),
-        mobileTable: document.querySelector('#mobileTable tbody')
-    };
-
-    // Clear tables
-    Object.values(departments).forEach(tbody => tbody.innerHTML = '');
-
-    data.forEach(doubt => {
-        const row = `
-            <tr>
-                <td>${doubt.name}</td>
-                <td>${doubt.project}</td>
-                <td>${doubt.description}</td>
-                <td class="${doubt.status === 'Open' ? 'status-open' : 'status-closed'}">${doubt.status}</td>
-            </tr>
-        `;
-        departments[doubt.department]?.insertAdjacentHTML('beforeend', row);
-    });
-}
-
-// Fetch on page load
-document.addEventListener('DOMContentLoaded', fetchDoubts);
-
+        fetchDoubts();
     </script>
 </body>
 </html>
+
