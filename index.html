@@ -315,15 +315,29 @@
             });
         });
 
-        // Submit Doubt Form
-        document.getElementById('doubtForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const department = document.getElementById('department').value;
-            const project = document.getElementById('project').value;
-            const doubtDescription = document.getElementById('doubtDescription').value;
-            const screenshots = document.getElementById('screenshotUpload').files;
+document.getElementById('doubtForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const department = document.getElementById('department').value;
+    const project = document.getElementById('project').value;
+    const description = document.getElementById('doubtDescription').value;
+
+    // Send data to Supabase
+    const { data, error } = await supabase
+        .from('doubts')
+        .insert([
+            { name, department, project, description, status: 'Open' }
+        ]);
+
+    if (error) {
+        alert('Error: ' + error.message);
+    } else {
+        alert('Doubt successfully added!');
+        window.location.reload(); // Reload to see the updated list
+    }
+});
+
 
             // Create screenshot URLs
             const screenshotUrls = Array.from(screenshots).map(file => {
