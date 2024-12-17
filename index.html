@@ -379,6 +379,42 @@ document.getElementById('doubtForm').addEventListener('submit', async function(e
                 modal.style.display = 'none';
             }
         });
+        async function fetchDoubts() {
+    const { data, error } = await supabase
+        .from('doubts')
+        .select('*');
+
+    if (error) {
+        console.error('Error fetching data:', error.message);
+        return;
+    }
+
+    const departments = {
+        qaTable: document.querySelector('#qaTable tbody'),
+        phpTable: document.querySelector('#phpTable tbody'),
+        wpTable: document.querySelector('#wpTable tbody'),
+        mobileTable: document.querySelector('#mobileTable tbody')
+    };
+
+    // Clear tables
+    Object.values(departments).forEach(tbody => tbody.innerHTML = '');
+
+    data.forEach(doubt => {
+        const row = `
+            <tr>
+                <td>${doubt.name}</td>
+                <td>${doubt.project}</td>
+                <td>${doubt.description}</td>
+                <td class="${doubt.status === 'Open' ? 'status-open' : 'status-closed'}">${doubt.status}</td>
+            </tr>
+        `;
+        departments[doubt.department]?.insertAdjacentHTML('beforeend', row);
+    });
+}
+
+// Fetch on page load
+document.addEventListener('DOMContentLoaded', fetchDoubts);
+
     </script>
 </body>
 </html>
