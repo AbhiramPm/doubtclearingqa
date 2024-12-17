@@ -128,45 +128,56 @@
 
     <!-- Scripts -->
     <script>
-        // Initialize Supabase
-        const supabaseUrl = "https://wpqmoelgswsroyzughjl.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW1vZWxnc3dzcm95enVnaGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MzQxODEsImV4cCI6MjA1MDAxMDE4MX0.FbwnyfxzQhc_Az674ocGeZgcNLRZ-35TM73k01mnBKQ";
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+      document.addEventListener("DOMContentLoaded", () => {
+    // Initialize Supabase
+    const supabaseUrl = "https://wpqmoelgswsroyzughjl.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW1vZWxnc3dzcm95enVnaGpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MzQxODEsImV4cCI6MjA1MDAxMDE4MX0.FbwnyfxzQhc_Az674ocGeZgcNLRZ-35TM73k01mnBKQ";
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Popup logic
-        const popupForm = document.getElementById("popupForm");
-        const addDoubtBtn = document.getElementById("addDoubtBtn");
-        const closePopup = document.getElementById("closePopup");
+    // Popup Logic
+    const popupForm = document.getElementById("popupForm");
+    const addDoubtBtn = document.getElementById("addDoubtBtn");
+    const closePopup = document.getElementById("closePopup");
 
-        addDoubtBtn.addEventListener("click", () => {
-            popupForm.style.display = "flex";
-        });
+    // Show popup on button click
+    addDoubtBtn.addEventListener("click", () => {
+        console.log("Ask Doubt button clicked!"); // Debug log
+        popupForm.style.display = "flex";
+    });
 
-        closePopup.addEventListener("click", () => {
+    // Close popup on Cancel button
+    closePopup.addEventListener("click", () => {
+        popupForm.style.display = "none";
+    });
+
+    // Handle form submission
+    document.getElementById("doubtForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const project = document.getElementById("project").value.trim();
+        const doubt = document.getElementById("doubt").value.trim();
+
+        if (!name || !project || !doubt) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        // Insert data into Supabase
+        const { data, error } = await supabase
+            .from("doubts")
+            .insert([{ name: name, project: project, doubt: doubt, status: "Pending" }]);
+
+        if (error) {
+            alert("Error submitting doubt: " + error.message);
+        } else {
+            alert("Doubt submitted successfully!");
             popupForm.style.display = "none";
-        });
+            document.getElementById("doubtForm").reset();
+        }
+    });
+});
 
-        // Handle form submission
-        document.getElementById("doubtForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById("name").value;
-            const project = document.getElementById("project").value;
-            const doubt = document.getElementById("doubt").value;
-
-            // Insert data into Supabase
-            const { data, error } = await supabase
-                .from("doubts")
-                .insert([{ name: name, project: project, doubt: doubt, status: "Pending" }]);
-
-            if (error) {
-                alert("Error submitting doubt: " + error.message);
-            } else {
-                alert("Doubt submitted successfully!");
-                popupForm.style.display = "none";
-                document.getElementById("doubtForm").reset();
-            }
-        });
     </script>
 
 </body>
