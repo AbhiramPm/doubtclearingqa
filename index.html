@@ -280,7 +280,7 @@
         </div>
     </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
 
 <script>
     // Initialize Supabase (Replace with your Supabase URL and API key)
@@ -303,6 +303,15 @@
             return URL.createObjectURL(file);
         });
 
+        // Log the data to ensure it's being sent
+        console.log({
+            name,
+            department,
+            project,
+            doubtDescription,
+            screenshotUrls
+        });
+
         // Insert doubt into Supabase
         const { data, error } = await supabase
             .from('doubts')  // Replace with your actual table name
@@ -319,7 +328,10 @@
 
         if (error) {
             console.error('Error inserting doubt:', error);
+            alert('Error inserting doubt: ' + error.message);
         } else {
+            console.log('Doubt inserted successfully:', data);
+
             // Add to the table on successful insert
             const tbody = document.querySelector(`#${department} tbody`);
             const tr = document.createElement('tr');
@@ -339,6 +351,8 @@
         }
     });
 </script>
+
+
 
 </body>
 </html>
