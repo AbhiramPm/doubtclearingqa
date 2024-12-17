@@ -13,13 +13,11 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background-color: #f0f4f8;
             color: #333;
             line-height: 1.6;
         }
-
         header {
             background-color: #2c3e50;
             color: white;
@@ -28,69 +26,30 @@
             align-items: center;
             padding: 1em 2em;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
-
         .container {
             width: 95%;
-            max-width: 1400px;
             margin: 20px auto;
+            text-align: center;
         }
-
-        .tables {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .table-container {
-            background-color: #fff;
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: #fff;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
         }
-
-        .table-header {
-            background-color: #3498db;
-            color: #fff;
-            padding: 12px;
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .table-body {
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
         th, td {
             padding: 12px;
-            text-align: center;
             border-bottom: 1px solid #ecf0f1;
+            text-align: center;
         }
-
-        .status-open {
-            color: #e74c3c;
-            font-weight: bold;
+        th {
+            background-color: #3498db;
+            color: white;
         }
-
-        .status-closed {
-            color: #2ecc71;
-            font-weight: bold;
-        }
-
         .btn {
             background-color: #3498db;
             color: white;
@@ -98,96 +57,82 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: all 0.3s ease;
         }
-
         .btn:hover {
             background-color: #2980b9;
-            transform: scale(1.05);
         }
-
         .modal {
             display: none;
             position: fixed;
             z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
         }
-
         .modal-content {
-            background-color: #fff;
-            margin: 5% auto;
-            padding: 25px;
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-
         .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
+            float: right;
+            font-size: 1.5em;
             cursor: pointer;
+            color: #aaa;
+        }
+        .close:hover {
+            color: #333;
         }
     </style>
 </head>
 <body>
     <header>
         <h1><i class="fas fa-question-circle"></i> Doubt Management System</h1>
-        <button class="btn" id="askDoubtBtn"><i class="fas fa-plus"></i> Ask Doubt</button>
+        <button id="askDoubtBtn" class="btn"><i class="fas fa-plus"></i> Ask Doubt</button>
     </header>
 
     <div class="container">
-        <div class="tables">
-            <div class="table-container" id="qaTable">
-                <div class="table-header">QA Department</div>
-                <div class="table-body">
-                    <table>
-                        <thead>
-                            <tr><th>Name</th><th>Project</th><th>Doubt</th><th>Status</th></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="table-container" id="phpTable">
-                <div class="table-header">PHP Department</div>
-                <div class="table-body">
-                    <table>
-                        <thead>
-                            <tr><th>Name</th><th>Project</th><th>Doubt</th><th>Status</th></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Project</th>
+                    <th>Doubt</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="doubtTableBody">
+                <!-- Doubts will be loaded here dynamically -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- Ask Doubt Modal -->
+    <!-- Modal -->
     <div id="askDoubtModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Ask a Doubt</h2>
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Submit Your Doubt</h2>
             <form id="doubtForm">
-                <label>Name:</label>
+                <label>Name:</label><br>
                 <input type="text" id="name" required><br><br>
-                <label>Department:</label>
+                <label>Department:</label><br>
                 <select id="department" required>
-                    <option value="qaTable">QA</option>
-                    <option value="phpTable">PHP</option>
+                    <option value="QA">QA</option>
+                    <option value="PHP">PHP</option>
                 </select><br><br>
-                <label>Project:</label>
+                <label>Project:</label><br>
                 <input type="text" id="project" required><br><br>
-                <label>Doubt:</label>
-                <textarea id="doubtDescription" required></textarea><br><br>
+                <label>Doubt:</label><br>
+                <textarea id="doubtDescription" rows="3" required></textarea><br><br>
                 <button type="submit" class="btn">Submit</button>
             </form>
         </div>
@@ -199,27 +144,36 @@
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         const modal = document.getElementById('askDoubtModal');
-        document.getElementById('askDoubtBtn').onclick = () => modal.style.display = 'block';
-        document.querySelector('.close').onclick = () => modal.style.display = 'none';
+        const closeModal = document.getElementById('closeModal');
+        const askDoubtBtn = document.getElementById('askDoubtBtn');
+
+        askDoubtBtn.onclick = () => modal.style.display = 'flex';
+        closeModal.onclick = () => modal.style.display = 'none';
 
         async function fetchDoubts() {
             const { data, error } = await supabase.from('doubts').select('*');
-            if (error) console.error('Error fetching:', error.message);
-
-            document.querySelectorAll('table tbody').forEach(tbody => tbody.innerHTML = '');
+            if (error) {
+                console.error('Error fetching doubts:', error.message);
+                return;
+            }
+            const tbody = document.getElementById('doubtTableBody');
+            tbody.innerHTML = ''; // Clear table before adding rows
 
             data.forEach(doubt => {
-                const row = `<tr>
-                    <td>${doubt.name}</td>
-                    <td>${doubt.project}</td>
-                    <td>${doubt.description}</td>
-                    <td class="status-open">${doubt.status}</td>
-                </tr>`;
-                document.querySelector(`#${doubt.department} tbody`).insertAdjacentHTML('beforeend', row);
+                const row = `
+                    <tr>
+                        <td>${doubt.name}</td>
+                        <td>${doubt.department}</td>
+                        <td>${doubt.project}</td>
+                        <td>${doubt.description}</td>
+                        <td>${doubt.status}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
             });
         }
 
-        document.getElementById('doubtForm').onsubmit = async function(e) {
+        document.getElementById('doubtForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const name = document.getElementById('name').value;
@@ -231,16 +185,16 @@
                 { name, department, project, description, status: 'Open' }
             ]);
 
-            if (error) alert('Error: ' + error.message);
-            else {
-                alert('Doubt submitted!');
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('Doubt submitted successfully!');
                 modal.style.display = 'none';
-                fetchDoubts();
+                fetchDoubts(); // Refresh the table
             }
-        };
+        });
 
-        fetchDoubts();
+        fetchDoubts(); // Initial load
     </script>
 </body>
 </html>
-
